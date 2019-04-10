@@ -1,1 +1,3 @@
-# guitar_brand_classifier
+# Guitar Brand Classifier
+
+Made with Flask and Keras
