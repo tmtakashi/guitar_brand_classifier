@@ -1,34 +1,12 @@
+import os
+
 from flask import Flask, render_template, request
 from werkzeug import secure_filename
-from PIL import Image
-import numpy as np
-from keras.models import load_model
-
-UPLOAD_FOLDER = './uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-model = load_model('inceptionv3_guitar_classifier.h5')
+from predict import predict
 
 app = Flask(__name__)
-
-class2idx = {
-    'B.C. Rich': 0,
-    'Caparison': 1,
-    'DEAN': 2,
-    'ESP': 3,
-    'Fender': 4,
-    'Gibson': 5,
-    'Ibanez': 6,
-    'Jackson': 7,
-    'Kiesel': 8,
-    'Mayones': 9,
-    'Paul Reed Smith': 10,
-    'SCHECTER': 11,
-    'Strandberg': 12,
-    'Suhr': 13
-}
-
-idx2class = {v: k for k, v in class2idx.items()}
+UPLOAD_FOLDER = './uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 @app.route('/')
@@ -43,16 +21,9 @@ def classify():
         if img_file:
             filename = secure_filename(img_file.filename)
             img_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            img_url = '/uploads/' + filename
-            img = Image.open(img_url)
-            img_resize = img.resize((224, 224))
-            img_array = np.asarray(img_resize)
-            img_array = img_array / 255.
-            img_array = img_array.reshape((1, 224, 224, 3))
+            img_url = 'uploads/' + filename
 
-            pred_idx = np.argmax(model.predict(img_array))
-
-            pred_brand = idx2class[pred_idx]
+            pred_brand = predict(img_url)
 
             return render_template('index.html', img_url=img_url, pred_brand=pred_brand)
 
