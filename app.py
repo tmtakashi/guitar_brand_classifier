@@ -13,30 +13,29 @@ with graph.as_default():
     model = load_model('inception_v3_guitar_classifier.h5')
 
 app = Flask(__name__)
-UPLOAD_FOLDER = './uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 class2idx = {
-        'B.C. Rich': 0,
-        'Caparison': 1,
-        'DEAN': 2,
-        'ESP': 3,
-        'Fender': 4,
-        'Gibson': 5,
-        'Ibanez': 6,
-        'Jackson': 7,
-        'Kiesel': 8,
-        'Mayones': 9,
-        'Paul Reed Smith': 10,
-        'SCHECTER': 11,
-        'Strandberg': 12,
-        'Suhr': 13
-    }
+    'B.C. Rich': 0,
+    'Caparison': 1,
+    'DEAN': 2,
+    'ESP': 3,
+    'Fender': 4,
+    'Gibson': 5,
+    'Ibanez': 6,
+    'Jackson': 7,
+    'Kiesel': 8,
+    'Mayones': 9,
+    'Paul Reed Smith': 10,
+    'SCHECTER': 11,
+    'Strandberg': 12,
+    'Suhr': 13
+}
 
 idx2class = {v: k for k, v in class2idx.items()}
 
+
 def predict(stream):
-    bytes = bytearray(stream.read()) 
+    bytes = bytearray(stream.read())
     img = Image.open(BytesIO(bytes))
     img_resize = img.resize((224, 224))
     img_array = np.asarray(img_resize)
@@ -63,6 +62,7 @@ def classify():
             return render_template('index.html', pred_brand=pred_brand)
         else:
             return render_template('index.html', warning="画像を選択してください!")
+
 
 if __name__ == '__main__':
     app.debug = True
