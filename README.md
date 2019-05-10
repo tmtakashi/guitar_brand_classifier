@@ -8,5 +8,5 @@ cd guitar_brand_classifier
 pip3 install pipenv
 pipenv install
 pipenv shell
-python main.py
+python app.py
 ```
