@@ -1,8 +1,9 @@
 import os
+from io import BytesIO
 
 from flask import Flask, render_template, request
 from werkzeug import secure_filename
-import cv2
+from PIL import Image
 import numpy as np
 from keras.models import load_model
 import tensorflow as tf
@@ -35,16 +36,15 @@ class2idx = {
 idx2class = {v: k for k, v in class2idx.items()}
 
 def predict(stream):
+    bytes = bytearray(stream.read()) 
+    img = Image.open(BytesIO(bytes))
+    img_resize = img.resize((224, 224))
+    img_array = np.asarray(img_resize)
+    img_array = img_array / 255.
+    img_array = img_array.reshape((1, 224, 224, 3))
     with graph.as_default():
-        img_array = np.asarray(bytearray(stream.read()), dtype=np.uint8)
-        img = cv2.imdecode(img_array, 1)
-        img_resize = cv2.resize(img, (224, 224))
-        img_resize = img_resize / 255.
-        img_resize = img_resize.reshape((1, 224, 224, 3))
-
-        pred_idx = np.argmax(model.predict(img_resize))
-
-        pred_brand = idx2class[pred_idx]
+        pred_idx = np.argmax(model.predict(img_array))
+    pred_brand = idx2class[pred_idx]
 
     return pred_brand
 

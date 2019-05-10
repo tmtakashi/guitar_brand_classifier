@@ -4,22 +4,30 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.js"
+    integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/static/css/style.css">
-    <title>Guitar Brand Classifier</title>
+    <title>Guitar Brand Checker</title>
 </head>
 <body>
     <div class="container mt-4">
-        <h2 class="text-center">ギターブランドチェッカー</h2>
+        <h2 class="text-center">Guitar Brand Checker</h2>
         <div class="mt-4 text-center">
-          <form method="post" action="/classify" enctype="multipart/form-data">
+          <form method="post" action="/classify" enctype="multipart/form-data" name='mainForm'>
             <label for="img_file" class="button" id='select-img'>
-              画像を選択
+              Select an Image
               <input type="file" id="img_file" name="img_file" class="col-sm-4">
             </label>
             <br>
-            <input type="submit" value="チェック" class="button" id="check">
+            <input type="submit" value="Check" class="button" id="check">
           </form>
           <br>
+          <img id="preview" width="400"><br>
+          {% if img_src %}
+            <img src="{{ img_src }}" alt="">
+          {% endif %}
           {% if pred_brand %}
               {{ pred_brand }}
           {% endif %}
@@ -29,4 +37,6 @@
         </div>
       </div>
 </body>
+<script src="/static/js/image_preview.js"></script>
+<script src="/static/js/predict.js"></script>
 </html>
